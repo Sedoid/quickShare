@@ -11,18 +11,27 @@ var firebaseConfig = {
   
   // Initialize Firebase
   firebase.initializeApp(firebaseConfig);
+
   var firestore = firebase.firestore();
 
+//   // Get a reference to the storage service, which is used to create references in your storage bucket
+//   var storage = firebase.storage();
+//   // Create a storage reference from our storage service
+//   var storageRef = storage.ref();
+
+
   const docRef = firestore.doc("Samples/userInput");
-  const user = '<span style="color:purple; display:block;" >Sedoid</span>';
+  const user = '<span style="color:green; display:block;" >Sedoid</span>';
 
 //console.log(this.Object(docRef));
     const chats = document.querySelector('#chats');
     const header = document.querySelector('h1');
     const userInput = document.querySelector('#userInput');
     const send = document.querySelector('#send');
+    const blob = document.getElementById('blob');
     const load = document.querySelector('#call');
     const body = document.querySelector('#second');
+    const progress_bar = document.getElementById('progress_bar');
     const clearChat = document.querySelector('#second ul');
 
  
@@ -34,6 +43,40 @@ var firebaseConfig = {
         })
          
     });
+
+    blob.addEventListener('change',(event)=>{
+        // Get the file
+        var metadata = {
+            'description': 'This is a record of what happened in event during day 24',
+        }
+        console.log(event.target.files.length)
+        let firstBloc = event.target.files[0];
+        console.log('sending the files already')
+        // Create an storage ref
+       
+         var storageRef  = firebase.storage().ref('images/'+firstBloc.name)
+         var task =   storageRef.put(firstBloc,metadata);
+
+        // Upload a file
+        task.on('state_changed',
+        function progress(snapshot){
+            console.log('progress is made');
+            console.log(snapshot.bytesTransferred);
+            var progress=(snapshot.bytesTransferred/snapshot.totalBytes) * 100;
+            progress_bar.value = progress;
+        },
+        function error(err){
+            console.log('an error occured')
+            console.log(err);
+        },
+        function complete(){
+            console.log('File transfer complete');
+        }
+        );
+
+        // Update progress bar
+        
+    })
       
 // Sending the data to firebase
     send.addEventListener('click',function(){
@@ -73,6 +116,7 @@ var firebaseConfig = {
            let timing = new Date().getTime();
            console.log("timing is "+timing);
            console.log('it shoud be running now');
+          
            docRef.onSnapshot(function(doc){
                if(doc && doc.exists){
                    const myData = doc.data();

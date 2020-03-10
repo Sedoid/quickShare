@@ -27,7 +27,7 @@ h1{
     padding: 10px 0;
 }
 
-div input{
+div input[type='text']{
    
     padding: 10px;
     margin:0px;
@@ -38,6 +38,13 @@ div input{
 input:focus{
     box-shadow: 2px 2px 2px #eee;
 
+}
+
+progress{
+    /* border: 2px solid green; */
+    outline: 2px solid green;
+    width: 80%;
+    margin:0 auto;
 }
 
 div button{

@@ -20,6 +20,10 @@
             <button id="send">Send</button>
             <br />
             <br />
+            <input type="file" id="blob" accept="file_extension|audio/*|video/*|image/*" />
+            <br />
+            <progress id="progress_bar" max="100" />
+            <br />
             <p> <button id="call"href="./assets/pages/notes.html"> Clear Chats </button></p>     
     </div>
 
@@ -44,6 +48,8 @@
 <!-- Add Firebase products that you want to use -->
 <script src="https://www.gstatic.com/firebasejs/7.2.0/firebase-auth.js"></script>
 <script src="https://www.gstatic.com/firebasejs/7.2.0/firebase-firestore.js"></script>
+<script src="https://www.gstatic.com/firebasejs/7.2.0/firebase-storage.js"> </script>
+<!-- <script src="./node_modules/@firebase/storage/" -->
 <!-- My Script goes in here -->
 <script src="assets/scripts/script.js"> </script>
 </body>
