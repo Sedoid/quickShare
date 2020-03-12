@@ -46,16 +46,14 @@ var firebaseConfig = {
 
     blob.addEventListener('change',(event)=>{
         // Get the file
-        var metadata = {
-            'description': 'This is a record of what happened in event during day 24',
-        }
+      
         console.log(event.target.files.length)
         let firstBloc = event.target.files[0];
         console.log('sending the files already')
         // Create an storage ref
        
-         var storageRef  = firebase.storage().ref('images/'+firstBloc.name)
-         var task =   storageRef.put(firstBloc,metadata);
+         var storageRef  = firebase.storage().ref('files/'+firstBloc.name)
+         var task =   storageRef.put(firstBloc);
 
         // Upload a file
         task.on('state_changed',
@@ -71,6 +69,28 @@ var firebaseConfig = {
         },
         function complete(){
             console.log('File transfer complete');
+
+            setTimeout(async function(){
+
+            let storageRef = firebase.storage().ref();
+               
+            let url = await storageRef.child(`files/${ event.target.files[0].name}`).getDownloadURL();
+    
+            const    docRef = firebase.firestore().doc(`Samples/userInput/${name}`);
+
+            console.log(url);
+
+            docRef.set({
+                userInput: `${user +  event.target.files[0].name}`,          
+                url: `${url}`, 
+                title: `${event.target.files[0].name}`                     
+            }).then(function(event){
+                console.log(`message data!`);
+            }).catch(function(error){
+                console.log(`Got an error ${error}`);
+            });
+ 
+            },2000);
         }
         );
 
@@ -120,6 +140,7 @@ var firebaseConfig = {
            docRef.onSnapshot(function(doc){
                if(doc && doc.exists){
                    const myData = doc.data();
+                   console.log(myData);
 // Checking and disposing of scripted messages 
                    let message = myData.userInput,
                         tagPosition = message.indexOf('>'),
@@ -134,7 +155,18 @@ var firebaseConfig = {
                    {
                        let message = myData.userInput;
                        console.log('garbage collected\n'+ message.substring(0,user.length-1));
-                   }else 
+                   }else if(myData.url)
+                   {
+                    const li = document.createElement('li');
+                    console.log(myData.userInput);
+                   li.innerHTML = `
+                   <iframe src="${myData.url}" height="100%" width="50%"></iframe> 
+                   <a href="${myData.url}" download>${myData.title}</a>`;
+                   textToSave = myData.userInput;
+                   chats.insertBefore(li,chats.childNodes[0]);
+          
+                   }
+                   else
                   { 
                       const li = document.createElement('li');
                          console.log(myData.userInput);
