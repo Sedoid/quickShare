@@ -44,6 +44,7 @@ var firebaseConfig = {
          
     });
 
+    // Just a senseless comment here now
     blob.addEventListener('change',(event)=>{
         // Get the file
       
